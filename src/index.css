@@ -1,0 +1,70 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-tinta-950: #05070d;
+  --color-tinta-900: #0b0f1a;
+  --color-tinta-800: #121826;
+  --color-tinta-700: #1c2436;
+  --color-tinta-600: #29334a;
+  --color-tinta-500: #3a4664;
+
+  --color-ouro-400: #f5c451;
+  --color-ouro-300: #f7d374;
+
+  --color-verde-500: #22c55e;
+  --color-verde-400: #4ade80;
+  --color-amarelo-500: #eab308;
+  --color-amarelo-400: #facc15;
+  --color-vermelho-500: #ef4444;
+  --color-vermelho-400: #f87171;
+
+  /* Só para "validade indeterminada" — deliberadamente FORA da escala
+     verde/amarelo/vermelho, para nunca ser lido como alerta. */
+  --color-azul-500: #3b82f6;
+  --color-azul-400: #60a5fa;
+  --color-azul-300: #93c5fd;
+
+  --font-display: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--color-tinta-950);
+  color: #e6e9f2;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* Área segura do celular (notch / barra de gestos) */
+.pb-safe {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-tinta-600);
+  border-radius: 999px;
+}
+
+/* Alvo de toque mínimo — dedo, não mouse */
+.alvo-toque {
+  min-height: 44px;
+  min-width: 44px;
+}
