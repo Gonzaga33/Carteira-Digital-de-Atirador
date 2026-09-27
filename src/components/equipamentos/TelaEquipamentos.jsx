@@ -13,11 +13,13 @@ import {
   apagarEquipamento,
   apagarGuiaTrafego,
 } from '../../hooks/useEquipamentos.js'
+import { useUsuario } from '../../hooks/useUsuario.js'
 import { sistemaDoEquipamento } from '../../lib/registro.js'
 
 export default function TelaEquipamentos() {
   const equipamentos = useEquipamentos()
   const guias = useGuiasTrafego()
+  const usuario = useUsuario()
 
   const [formArma, setFormArma] = useState(null) // { equipamento: null|obj } | null
   const [formGuia, setFormGuia] = useState(null) // { equipamento, guia: null|obj } | null
@@ -50,6 +52,7 @@ export default function TelaEquipamentos() {
             key={equipamento.id}
             equipamento={equipamento}
             guias={guiasDoEquipamento(guias, equipamento.id)}
+            dispensadoDeGt={usuario?.dispensadoDeGt ?? false}
             onVerCraf={() => {
               const sistema = sistemaDoEquipamento(equipamento)
               setVisualizacao({

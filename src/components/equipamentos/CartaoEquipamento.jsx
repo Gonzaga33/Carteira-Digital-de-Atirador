@@ -7,6 +7,7 @@ import { sistemaDoEquipamento } from '../../lib/registro.js'
 export default function CartaoEquipamento({
   equipamento,
   guias,
+  dispensadoDeGt = false,
   onVerCraf,
   onEditar,
   onApagar,
@@ -65,9 +66,17 @@ export default function CartaoEquipamento({
       {/* GTs SEMPRE agrupadas logo abaixo do equipamento dono — nunca numa
           lista solta em outro lugar da tela. A Guia de Tráfego vale para
           qualquer sistema de registro, SIGMA/CRAF ou SINARM: por isso ela
-          não muda com o sistema escolhido acima. */}
+          não muda com o sistema escolhido acima. `dispensadoDeGt` é status
+          da PESSOA (policial/agente de segurança pública), não da arma —
+          por isso vem de `usuario`, não de um campo do equipamento — e só
+          troca a mensagem de vazio; se já existe GT registrada (situação
+          excepcional), ela continua aparecendo normalmente. */}
       <div className="mt-3 space-y-2">
-        {guias.length === 0 ? (
+        {guias.length === 0 && dispensadoDeGt ? (
+          <p className="text-xs italic text-slate-500">
+            Guia de Tráfego dispensada — agente de segurança pública.
+          </p>
+        ) : guias.length === 0 ? (
           <p className="text-xs italic text-slate-500">Nenhuma guia de tráfego cadastrada.</p>
         ) : (
           guias.map((guia) => (

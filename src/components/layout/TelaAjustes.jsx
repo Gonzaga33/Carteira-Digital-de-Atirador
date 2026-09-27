@@ -15,12 +15,14 @@ export default function TelaAjustes({ aberto, onFechar }) {
   const [mensagem, setMensagem] = useState(null) // { tipo: 'ok'|'erro', texto }
   const [nome, setNome] = useState('')
   const [cpf, setCpf] = useState('')
+  const [dispensadoDeGt, setDispensadoDeGt] = useState(false)
   const [chaveCarregada, setChaveCarregada] = useState('')
 
   if (aberto && chaveCarregada !== 'carregado' && usuario) {
     setChaveCarregada('carregado')
     setNome(usuario.nome ?? '')
     setCpf(usuario.cpf ?? '')
+    setDispensadoDeGt(usuario.dispensadoDeGt ?? false)
   }
 
   if (!aberto) return null
@@ -52,7 +54,7 @@ export default function TelaAjustes({ aberto, onFechar }) {
 
   async function aoSalvarPerfil(evento) {
     evento.preventDefault()
-    await salvarUsuario({ nome, cpf })
+    await salvarUsuario({ nome, cpf, dispensadoDeGt })
     setMensagem({ tipo: 'ok', texto: 'Dados pessoais atualizados.' })
   }
 
@@ -96,6 +98,18 @@ export default function TelaAjustes({ aberto, onFechar }) {
               rotulo="CPF"
               filho={<input className={classeCampo()} value={cpf} onChange={(e) => setCpf(e.target.value)} />}
             />
+            <label className="flex items-center gap-2.5 rounded-xl border border-tinta-600 bg-tinta-800 px-3.5 py-3">
+              <input
+                type="checkbox"
+                checked={dispensadoDeGt}
+                onChange={(e) => setDispensadoDeGt(e.target.checked)}
+                className="h-5 w-5 rounded border-tinta-500 bg-tinta-700 text-ouro-400 focus:ring-ouro-400"
+              />
+              <span className="text-sm text-slate-200">
+                Sou <strong>policial ou agente de segurança pública</strong> — dispensado de Guia
+                de Tráfego
+              </span>
+            </label>
             <Botao type="submit" variante="secundario" className="w-full">
               Salvar dados pessoais
             </Botao>
