@@ -3,7 +3,15 @@ import { db } from '../db/db.js'
 const VERSAO_BACKUP = 1
 
 /** Junta as seis tabelas num único objeto — o arquivo .json que o usuário
- * pode guardar fora do aparelho (e-mail, nuvem própria) e restaurar depois. */
+ * pode guardar fora do aparelho (e-mail, nuvem própria) e restaurar depois.
+ *
+ * DE PROPÓSITO não inclui `seguranca` (o hash do PIN, ver lib/seguranca.js).
+ * Se incluísse, restaurar um backup ANTIGO reativaria um PIN que o usuário
+ * já esqueceu — o único caminho de recuperação documentado (README e
+ * TelaTrava.jsx) é limpar os dados do app e recomeçar; um backup que
+ * trouxesse o PIN de volta destruiria essa saída. Trocar de aparelho
+ * continua funcionando: quem restaura decide o PIN de novo (ou não usa),
+ * na próxima abertura. */
 export async function exportarBackup() {
   const [usuario, equipamentos, guiasTrafego, habitualidades, cotasInsumos, comprasInsumos] =
     await Promise.all([

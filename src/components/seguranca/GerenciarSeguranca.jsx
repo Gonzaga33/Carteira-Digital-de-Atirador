@@ -78,15 +78,21 @@ function FluxoPin({ fluxo, onFechar, onResolvido }) {
   const [erro, setErro] = useState('')
   const [processando, setProcessando] = useState(false)
 
-  const chaveAbertura = fluxo ?? ''
-  const [chaveCarregada, setChaveCarregada] = useState('')
-  if (fluxo && chaveCarregada !== chaveAbertura) {
-    setChaveCarregada(chaveAbertura)
-    setPin('')
-    setPinAtual('')
-    setPrimeiroPinNovo('')
-    setErro('')
-    setEtapa(fluxo === 'ativar' ? 'novo-definir' : fluxo === 'trocar' ? 'atual' : 'atual-remover')
+  // Compara com o ÚLTIMO `fluxo` visto (inclusive `null`, de quando fechou) —
+  // não só com o último flow ABERTO. Comparar só contra o último ABERTO
+  // deixava dígitos e etapa de uma tentativa anterior visíveis ao reabrir o
+  // MESMO fluxo (ex.: fechar "Trocar PIN" no meio e clicar em "Trocar PIN"
+  // de novo): fechar não zera nada, e o fluxo novo "parece" igual ao antigo.
+  const [ultimoFluxoVisto, setUltimoFluxoVisto] = useState(null)
+  if (fluxo !== ultimoFluxoVisto) {
+    setUltimoFluxoVisto(fluxo)
+    if (fluxo) {
+      setPin('')
+      setPinAtual('')
+      setPrimeiroPinNovo('')
+      setErro('')
+      setEtapa(fluxo === 'ativar' ? 'novo-definir' : fluxo === 'trocar' ? 'atual' : 'atual-remover')
+    }
   }
 
   if (!fluxo) return null
