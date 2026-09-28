@@ -6,7 +6,7 @@ import { useUsuario } from '../../hooks/useUsuario.js'
 
 export default function TelaCarteira() {
   const usuario = useUsuario()
-  const [edicao, setEdicao] = useState(null) // 'cr' | 'clube' | null
+  const [edicao, setEdicao] = useState(null) // 'cr' | 'clube' | 'cracha' | null
   const [visualizacao, setVisualizacao] = useState(null) // { titulo, subtitulo, url } | null
 
   if (!usuario) {
@@ -56,8 +56,26 @@ export default function TelaCarteira() {
         onEditar={() => setEdicao('clube')}
       />
 
+      <CartaoDocumento
+        titulo="Crachá Funcional"
+        linhas={[
+          { rotulo: 'Matrícula', valor: usuario.crachaNumero },
+          linhaData('Validade', usuario.crachaValidade),
+        ]}
+        validade={usuario.crachaValidade}
+        imagemUrl={usuario.crachaImagemUrl}
+        onVer={() =>
+          setVisualizacao({
+            titulo: 'Crachá Funcional',
+            subtitulo: `Matrícula ${usuario.crachaNumero || '—'}`,
+            url: usuario.crachaImagemUrl,
+          })
+        }
+        onEditar={() => setEdicao('cracha')}
+      />
+
       <FormularioDocumentoUsuario
-        tipo={edicao === 'clube' ? 'clube' : 'cr'}
+        tipo={edicao ?? 'cr'}
         usuario={usuario}
         aberto={edicao !== null}
         onFechar={() => setEdicao(null)}

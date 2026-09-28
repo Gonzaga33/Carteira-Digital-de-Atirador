@@ -5,12 +5,44 @@ import CampoArquivo from '../common/CampoArquivo.jsx'
 import Botao from '../common/Botao.jsx'
 import { salvarUsuario } from '../../hooks/useUsuario.js'
 
-/**
- * Formulário genérico para os dois documentos do usuário (CR e Filiação
- * ao clube) — os campos mudam conforme `tipo`, a gravação é a mesma.
- */
+// Um lugar só decide o rótulo/campo de cada documento do usuário — CR,
+// Filiação ao clube e Crachá funcional (prova de ser policial/agente de
+// segurança pública, usada junto da dispensa de GT em Ajustes). Os três
+// têm a MESMA forma (número + validade + foto), só o rótulo e a chave no
+// banco mudam; por isso um formulário só, nunca três copiados.
+const CONFIGURACOES = {
+  cr: {
+    titulo: 'Editar CR',
+    rotuloNumero: 'Número do CR',
+    placeholderNumero: '1234567',
+    temNomeClube: false,
+    campoNumero: 'crNumero',
+    campoValidade: 'crValidade',
+    campoImagemUrl: 'crImagemUrl',
+  },
+  clube: {
+    titulo: 'Editar filiação ao clube',
+    rotuloNumero: 'Matrícula no clube',
+    placeholderNumero: 'AC-9842',
+    temNomeClube: true,
+    campoNumero: 'clubeMatricula',
+    campoNomeClube: 'clubeNome',
+    campoValidade: 'clubeValidade',
+    campoImagemUrl: 'clubeImagemUrl',
+  },
+  cracha: {
+    titulo: 'Editar crachá funcional',
+    rotuloNumero: 'Matrícula funcional',
+    placeholderNumero: 'PC-12345',
+    temNomeClube: false,
+    campoNumero: 'crachaNumero',
+    campoValidade: 'crachaValidade',
+    campoImagemUrl: 'crachaImagemUrl',
+  },
+}
+
 export default function FormularioDocumentoUsuario({ tipo, usuario, aberto, onFechar, onVerAmpliado }) {
-  const ehCr = tipo === 'cr'
+  const config = CONFIGURACOES[tipo] ?? CONFIGURACOES.cr
 
   const [numero, setNumero] = useState('')
   const [nomeClube, setNomeClube] = useState('')
@@ -18,45 +50,32 @@ export default function FormularioDocumentoUsuario({ tipo, usuario, aberto, onFe
   const [imagemUrl, setImagemUrl] = useState('')
 
   // Reabre sempre com o valor atual gravado — nunca com o da edição anterior.
-  const chaveAbertura = `${aberto}-${usuario?.id ?? ''}`
+  const chaveAbertura = `${aberto}-${tipo}-${usuario?.id ?? ''}`
   const [chaveCarregada, setChaveCarregada] = useState('')
   if (aberto && chaveCarregada !== chaveAbertura && usuario) {
     setChaveCarregada(chaveAbertura)
-    if (ehCr) {
-      setNumero(usuario.crNumero ?? '')
-      setValidade(usuario.crValidade ?? '')
-      setImagemUrl(usuario.crImagemUrl ?? '')
-    } else {
-      setNumero(usuario.clubeMatricula ?? '')
-      setNomeClube(usuario.clubeNome ?? '')
-      setValidade(usuario.clubeValidade ?? '')
-      setImagemUrl(usuario.clubeImagemUrl ?? '')
-    }
+    setNumero(usuario[config.campoNumero] ?? '')
+    setValidade(usuario[config.campoValidade] ?? '')
+    setImagemUrl(usuario[config.campoImagemUrl] ?? '')
+    setNomeClube(config.temNomeClube ? (usuario[config.campoNomeClube] ?? '') : '')
   }
 
   async function aoSalvar(evento) {
     evento.preventDefault()
-    if (ehCr) {
-      await salvarUsuario({ crNumero: numero, crValidade: validade, crImagemUrl: imagemUrl })
-    } else {
-      await salvarUsuario({
-        clubeNome: nomeClube,
-        clubeMatricula: numero,
-        clubeValidade: validade,
-        clubeImagemUrl: imagemUrl,
-      })
+    const paraGravar = {
+      [config.campoNumero]: numero,
+      [config.campoValidade]: validade,
+      [config.campoImagemUrl]: imagemUrl,
     }
+    if (config.temNomeClube) paraGravar[config.campoNomeClube] = nomeClube
+    await salvarUsuario(paraGravar)
     onFechar()
   }
 
   return (
-    <FolhaInferior
-      titulo={ehCr ? 'Editar CR' : 'Editar filiação ao clube'}
-      aberto={aberto}
-      onFechar={onFechar}
-    >
+    <FolhaInferior titulo={config.titulo} aberto={aberto} onFechar={onFechar}>
       <form onSubmit={aoSalvar} className="space-y-4">
-        {!ehCr ? (
+        {config.temNomeClube ? (
           <Campo
             rotulo="Nome do clube"
             filho={
@@ -71,13 +90,13 @@ export default function FormularioDocumentoUsuario({ tipo, usuario, aberto, onFe
         ) : null}
 
         <Campo
-          rotulo={ehCr ? 'Número do CR' : 'Matrícula no clube'}
+          rotulo={config.rotuloNumero}
           filho={
             <input
               className={classeCampo()}
               value={numero}
               onChange={(e) => setNumero(e.target.value)}
-              placeholder={ehCr ? '1234567' : 'AC-9842'}
+              placeholder={config.placeholderNumero}
             />
           }
         />
