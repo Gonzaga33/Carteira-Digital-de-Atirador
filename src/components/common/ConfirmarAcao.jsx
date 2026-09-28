@@ -1,10 +1,20 @@
 import { AlertTriangle } from 'lucide-react'
 import Botao from './Botao.jsx'
 
-/** Confirmação simples antes de qualquer exclusão — apagar é a única ação
- * sem volta neste app (não há "lixeira"), por isso nunca acontece direto
- * no primeiro toque. */
-export default function ConfirmarAcao({ aberto, titulo, mensagem, onConfirmar, onCancelar }) {
+/** Confirmação simples antes de qualquer ação sem volta — apagar é o caso
+ * mais comum, mas restaurar um backup também é (substitui tudo que está no
+ * aparelho). `rotuloConfirmar` default "Apagar" cobre os cinco usos de
+ * exclusão sem precisar passar nada; só Restaurar backup (TelaAjustes)
+ * troca — deixar "Apagar" ali confundia (e travava) quem via o botão de
+ * apagar numa tela que só queria trazer dados de volta. */
+export default function ConfirmarAcao({
+  aberto,
+  titulo,
+  mensagem,
+  onConfirmar,
+  onCancelar,
+  rotuloConfirmar = 'Apagar',
+}) {
   if (!aberto) return null
 
   return (
@@ -24,7 +34,7 @@ export default function ConfirmarAcao({ aberto, titulo, mensagem, onConfirmar, o
             Cancelar
           </Botao>
           <Botao variante="perigo" onClick={onConfirmar}>
-            Apagar
+            {rotuloConfirmar}
           </Botao>
         </div>
       </div>

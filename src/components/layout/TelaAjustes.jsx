@@ -156,6 +156,7 @@ export default function TelaAjustes({ aberto, onFechar }) {
       <ConfirmarAcao
         aberto={backupPendente !== null}
         titulo="Restaurar backup"
+        rotuloConfirmar="Restaurar"
         mensagem={
           <span className="inline-flex items-start gap-2">
             <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amarelo-500" />

@@ -76,10 +76,20 @@ export async function lerArquivoDeBackup(arquivo) {
 }
 
 /** Restaura substituindo TUDO — pedido explícito do usuário, avisado antes
- * na tela (é uma ação destrutiva sobre o que está no aparelho agora). */
+ * na tela (é uma ação destrutiva sobre o que está no aparelho agora).
+ *
+ * EXCEÇÃO: `usuario` só é limpo quando o backup TRAZ uma linha para repor.
+ * Um backup gerado sem CR/filiação (ex.: um arquivo pensado só para trazer
+ * armas) tinha `usuario: []` — e limpar sem repor deixava a tabela vazia
+ * PARA SEMPRE (nada recria a linha sozinho depois da primeira abertura), o
+ * que travava a tela Carteira Digital em "Carregando…" para todo o resto
+ * da vida do app. As outras cinco tabelas continuam substituídas por
+ * inteiro mesmo vazias — só o usuário único (linha id fixo) não pode
+ * ficar noutro estado que não seja "tem um" ou "continua o que já tinha". */
 export async function restaurarBackup(json) {
   const { usuario, equipamentos, guiasTrafego, habitualidades, cotasInsumos, comprasInsumos } =
     json.dados
+  const temUsuarioNoBackup = Boolean(usuario?.length)
 
   await db.transaction(
     'rw',
@@ -91,7 +101,7 @@ export async function restaurarBackup(json) {
     db.comprasInsumos,
     async () => {
       await Promise.all([
-        db.usuario.clear(),
+        temUsuarioNoBackup ? db.usuario.clear() : Promise.resolve(),
         db.equipamentos.clear(),
         db.guiasTrafego.clear(),
         db.habitualidades.clear(),
@@ -99,7 +109,7 @@ export async function restaurarBackup(json) {
         db.comprasInsumos.clear(),
       ])
       await Promise.all([
-        usuario?.length ? db.usuario.bulkPut(usuario) : Promise.resolve(),
+        temUsuarioNoBackup ? db.usuario.bulkPut(usuario) : Promise.resolve(),
         db.equipamentos.bulkPut(equipamentos),
         db.guiasTrafego.bulkPut(guiasTrafego),
         db.habitualidades.bulkPut(habitualidades),
