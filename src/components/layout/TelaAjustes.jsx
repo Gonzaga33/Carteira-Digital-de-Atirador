@@ -7,6 +7,7 @@ import Campo, { classeCampo } from '../common/Campo.jsx'
 import GerenciarSeguranca from '../seguranca/GerenciarSeguranca.jsx'
 import { exportarBackup, baixarBackupComoArquivo, lerArquivoDeBackup, restaurarBackup } from '../../lib/backup.js'
 import { useUsuario, salvarUsuario } from '../../hooks/useUsuario.js'
+import { marcarPickerAberto } from '../../lib/seletorDeArquivo.js'
 
 export default function TelaAjustes({ aberto, onFechar }) {
   const usuario = useUsuario()
@@ -145,7 +146,14 @@ export default function TelaAjustes({ aberto, onFechar }) {
             className="hidden"
             onChange={aoEscolherArquivo}
           />
-          <Botao variante="secundario" className="w-full" onClick={() => inputRef.current?.click()}>
+          <Botao
+            variante="secundario"
+            className="w-full"
+            onClick={() => {
+              marcarPickerAberto()
+              inputRef.current?.click()
+            }}
+          >
             <Upload size={16} /> Restaurar de um backup
           </Botao>
         </Cartao>

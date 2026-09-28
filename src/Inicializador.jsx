@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Crosshair } from 'lucide-react'
 import { semearBancoSeVazio } from './db/seed.js'
 import { jaDecidiuSobreTrava, travaConfigurada } from './lib/seguranca.js'
+import { consumirPickerAberto } from './lib/seletorDeArquivo.js'
 import TelaTrava from './components/seguranca/TelaTrava.jsx'
 import App from './App.jsx'
 
@@ -37,10 +38,18 @@ export default function Inicializador() {
   // minimizar) — é exatamente o momento em que alguém pode pegar o
   // celular. Consulta o banco a cada troca de visibilidade (nunca confia
   // em estado antigo em memória) e só tranca se houver PIN de verdade.
+  //
+  // EXCEÇÃO: abrir o seletor de foto/arquivo nativo TAMBÉM esconde a
+  // página (é assim que todo navegador de celular mostra essa tela por
+  // cima do app) — sem `consumirPickerAberto()`, qualquer envio de foto
+  // (CR, CRAF/SINARM, GT, comprovante, e o próprio "Restaurar backup")
+  // re-travava a sessão no meio do caminho, sempre no pior momento:
+  // assim que a pessoa escolhia o arquivo.
   useEffect(() => {
     if (!pronto) return
     function aoTrocarVisibilidade() {
       if (!document.hidden) return
+      if (consumirPickerAberto()) return
       travaConfigurada().then((ativa) => {
         if (!ativa) return
         setModoTrava('desbloquear')

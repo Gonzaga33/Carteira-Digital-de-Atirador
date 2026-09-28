@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Paperclip, Eye, Trash2, Loader2 } from 'lucide-react'
 import { arquivoParaDataUrl } from '../../lib/imagem.js'
+import { marcarPickerAberto } from '../../lib/seletorDeArquivo.js'
 import Botao from './Botao.jsx'
 
 /** Envio de foto ou PDF, com prévia e remoção — usado por todo anexo do
@@ -54,7 +55,10 @@ export default function CampoArquivo({ valor, aoMudar, onVerAmpliado, rotuloVazi
       ) : (
         <button
           type="button"
-          onClick={() => inputRef.current?.click()}
+          onClick={() => {
+            marcarPickerAberto()
+            inputRef.current?.click()
+          }}
           disabled={carregando}
           className={classeCampoArquivo()}
         >
