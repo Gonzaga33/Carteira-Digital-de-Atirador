@@ -5,17 +5,21 @@ import { formatarData } from '../../lib/data.js'
 export default function CartaoGuiaTrafego({ guia, onVer, onEditar, onApagar }) {
   return (
     <div className="rounded-xl border border-tinta-700 bg-tinta-800/60 p-3">
-      <div className="flex items-start gap-2">
-        <div className="flex min-w-0 flex-1 items-start gap-2">
-          <Route size={16} className="mt-0.5 shrink-0 text-ouro-300" />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-slate-100">
-              {guia.numeroGt || 'GT sem número'}
-            </p>
-            <p className="truncate text-xs text-slate-400">{guia.tipo || '—'}</p>
-          </div>
+      {/* Selo de validade numa linha PRÓPRIA, não disputando espaço com o
+          número da GT — mesmo ajuste do cartão de arma (ver comentário
+          lá): lado a lado com `compacto`, o número era espremido a quase
+          nada com a fonte do sistema aumentada. */}
+      <div className="flex min-w-0 items-start gap-2">
+        <Route size={16} className="mt-0.5 shrink-0 text-ouro-300" />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-slate-100">
+            {guia.numeroGt || 'GT sem número'}
+          </p>
+          <p className="truncate text-xs text-slate-400">{guia.tipo || '—'}</p>
         </div>
-        <SeloValidade dataValidade={guia.validadeGt} compacto />
+      </div>
+      <div className="mt-1.5">
+        <SeloValidade dataValidade={guia.validadeGt} />
       </div>
 
       <dl className="mt-2 space-y-1 text-xs text-slate-400">

@@ -1,5 +1,6 @@
 import { AlertTriangle } from 'lucide-react'
 import Botao from './Botao.jsx'
+import { useFecharComVoltar } from '../../lib/fecharComVoltar.js'
 
 /** Confirmação simples antes de qualquer ação sem volta — apagar é o caso
  * mais comum, mas restaurar um backup também é (substitui tudo que está no
@@ -15,6 +16,8 @@ export default function ConfirmarAcao({
   onCancelar,
   rotuloConfirmar = 'Apagar',
 }) {
+  useFecharComVoltar(aberto, onCancelar)
+
   if (!aberto) return null
 
   return (

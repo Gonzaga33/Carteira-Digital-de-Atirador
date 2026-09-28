@@ -1,10 +1,15 @@
 import { useEffect } from 'react'
 import { X } from 'lucide-react'
+import { useFecharComVoltar } from '../../lib/fecharComVoltar.js'
 
 /** "Bottom sheet" — a moldura padrão de todo formulário do app. Fecha com
  * Esc ou X; NUNCA ao clicar fora, porque formulário com dado meio-digitado
- * some ao encostar sem querer é o tipo de armadilha que frustra no celular. */
+ * some ao encostar sem querer é o tipo de armadilha que frustra no celular.
+ * O botão VOLTAR do celular também fecha (useFecharComVoltar), em vez de
+ * sair do app inteiro. */
 export default function FolhaInferior({ titulo, aberto, onFechar, children }) {
+  useFecharComVoltar(aberto, onFechar)
+
   useEffect(() => {
     if (!aberto) return
     function aoTeclar(evento) {

@@ -8,8 +8,11 @@ import GerenciarSeguranca from '../seguranca/GerenciarSeguranca.jsx'
 import { exportarBackup, baixarBackupComoArquivo, lerArquivoDeBackup, restaurarBackup } from '../../lib/backup.js'
 import { useUsuario, salvarUsuario } from '../../hooks/useUsuario.js'
 import { marcarPickerAberto } from '../../lib/seletorDeArquivo.js'
+import { useFecharComVoltar } from '../../lib/fecharComVoltar.js'
 
 export default function TelaAjustes({ aberto, onFechar }) {
+  useFecharComVoltar(aberto, onFechar)
+
   const usuario = useUsuario()
   const inputRef = useRef(null)
   const [backupPendente, setBackupPendente] = useState(null)

@@ -20,30 +20,36 @@ export default function CartaoEquipamento({
 
   return (
     <Cartao>
-      <div className="flex items-start gap-2">
-        <div className="flex min-w-0 flex-1 items-start gap-3">
-          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-tinta-800 text-ouro-300">
-            <Crosshair size={22} />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate font-display text-base font-bold uppercase tracking-wide text-slate-100">
-              {equipamento.marcaModelo}
-            </p>
-            <p className="truncate text-xs text-slate-400">
-              {equipamento.tipo} · {equipamento.calibre}
-            </p>
-          </div>
+      {/* O nome ganha a linha INTEIRA, sozinho — o selo de validade morava
+          na mesma linha (`compacto`, largura travada em 9.5rem) e brigava
+          por espaço com o nome. Num celular com a fonte do sistema
+          aumentada, ícone/gap/selo crescem em `rem` enquanto a tela física
+          não muda de largura — a fatia que sobrava para o nome ficava tão
+          apertada que "IMBEL..." virava só "I…". Selo e nome não competem
+          mais: cada um tem sua própria linha, cheia. */}
+      <div className="flex items-start gap-3">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-tinta-800 text-ouro-300">
+          <Crosshair size={22} />
         </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-display text-base font-bold uppercase tracking-wide text-slate-100">
+            {equipamento.marcaModelo}
+          </p>
+          <p className="truncate text-xs text-slate-400">
+            {equipamento.tipo} · {equipamento.calibre}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-2 flex flex-wrap items-center gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-ouro-400/30 bg-ouro-400/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-ouro-300">
+          {sistema.rotuloCurto}
+        </span>
         <SeloValidade
           dataValidade={equipamento[sistema.campoValidade]}
           indeterminada={equipamento.validadeIndeterminada}
-          compacto
         />
       </div>
-
-      <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-ouro-400/30 bg-ouro-400/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-ouro-300">
-        {sistema.rotuloCurto}
-      </span>
 
       <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs text-slate-400">
         <Dado rotulo="Nº de série" valor={equipamento.numeroSerie} />

@@ -1,10 +1,14 @@
 import { useEffect } from 'react'
 import { X, FileWarning } from 'lucide-react'
 import { ehPdf } from '../../lib/imagem.js'
+import { useFecharComVoltar } from '../../lib/fecharComVoltar.js'
 
 /** Visualização em tela cheia de um documento (CR, CRAF, GT). Fecha com
- * Esc, clique fora, ou o X — os três caminhos de sempre. */
+ * Esc, clique fora, o X, ou o botão VOLTAR do celular — os quatro caminhos
+ * de sempre. */
 export default function ModalDocumento({ titulo, subtitulo, urlImagem, aberto, onFechar }) {
+  useFecharComVoltar(aberto, onFechar)
+
   useEffect(() => {
     if (!aberto) return
     function aoTeclar(evento) {
